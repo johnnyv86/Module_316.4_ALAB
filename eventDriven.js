@@ -360,7 +360,6 @@ function validateLoginPassword(passwordRaw, usernameRaw, users) {
 
     return null;
 }
-
 /*============================================*/
 
 
@@ -368,15 +367,67 @@ function validateLoginPassword(passwordRaw, usernameRaw, users) {
 
 ============================================*/
 
-/*---------------- Prevent Default Submisssion --------------
+/* Prevent Default Submisssion ----------------  --------------
+    Grabs the:
+        Username
+        Password
+        "Keep me logged in" checkbox */
 
-----------------------------------------------------*/
+if (loginForm) {
+    loginForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        resetErrorBoxStyle();
+        clearError();
 
-/*---------------- Validate Submisssion --------------
+        const form = event.target;
+        const usernameInput = form.elements["username"];
+        const passwordInput = form.elements["password"];
+        const persistInput = form.elements["persist"];
 
-----------------------------------------------------*/
+        const users = loadUsers();
 
-/*---------------- Submisssion Success --------------
+/* Validate Submisssion ----------------  --------------
+    If anything fails:
+        Show error
+        Focus input
+        Stop */
 
+        const usernameError = validateLoginUsername(usernameInput.value, users);
+        if (usernameError) {
+            showError(usernameError, usernameInput);
+            return;
+        }
+
+        const passwordError = validateLoginPassword(
+            passwordInput.value,
+            usernameInput.value,
+            users
+        );
+
+        if (passwordError) {
+            showError(passwordError, passwordInput);
+            return;
+        }
+
+
+/* Submisssion Success ----------------  --------------
+    Clear the form
+    Show a success message when suffix checked:
+        "Keep me logged in" */
+
+        form.reset();
+
+        let successMessage = "Login successful!";
+        if (persistInput.checked) {
+            successMessage += "(You will be kept logged in.)";
+        }
+
+        showSuccess(successMessage)
+
+        setTimeout (() => {
+            resetErrorBoxStyle();
+        }, 0);
+    });
+}
 ----------------------------------------------------*/
 

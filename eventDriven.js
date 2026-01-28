@@ -227,5 +227,119 @@ function validateTerms(termsChecked) {
 }
 /*----------------------------------------------------*/
 
+/* =============== Registration Form Handler ===============*/
+if (registrationForm) {
+    registrationForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        resetErrorBoxStyle();
+        clearError();
+        /* (event.preventDefault()) prevents the browser’s default form submission */
 
+        const form = event.target;
+        const usernameInput = form.elements["username"];
+        const emailInput = form.elements["email"];
+        const passwordInput = form.elements["password"];
+        const passwordCheckInput = form.elements ["passwordCheck"];
+        const termsInput = form.elements["terms"];
+        /* (form.elements[name]): Get each input that matches the `name` attributes in the HTML */
+        
+        const users = loadUsers();
+        /* Load existing users from localStorage */
+
+    
+    /* For each error -------------------------------------------------------------
+        (showError): to display the message and set focus
+        (return): to stop further execution (form does not submit), as required 
+        ------------------------------------------------------------------------ */
+
+        const usernameError = validateUsername(usernameInput.value, users);
+        if (usernameError) {
+            showError(usernameError, usernameInput);
+            return;
+        }
+
+        const emailError = validateEmail(emailInput.value);
+        if (emailError) {
+            showError(emailError, emailInput);
+            return;
+        }
+
+        const passwordError = validatePasswords(
+            passwordInput.value,
+            passwordCheckInput.value,
+            usernameInput.value
+        );
+        if (passwordError) {
+            showError(passwordError, passwordInput);
+            return;
+        }
+
+        const termsError = validateTerms(termsInput.checked);
+        if (termsError) {
+            showError(termsError, termsInput);
+            return;
+        }
+
+    /* If/When NO error -------------------------------------------------------------
+        Check Pass - Store the user
+        ------------------------------------------------------------------------ */
+        
+        const usernameLower = usernameInput.value.trim().toLowerCase();
+        const emailLower = emailInput.value.trim().toLowerCase();
+        /* Normalize username and email to lowercase before storage */
+
+        users[usernameLower] = {
+            username: usernameLower,
+            email: emailLower,
+            password: passwordInput.value,
+            /* Store (password) as entered (in a real app would hash) */
+        };
+
+        saveUsers(users);
+
+        form.reset();
+        /* Clear the form and show a success message */
+
+        showSuccess("Registration successful! You may now log in.");
+
+        setTimeout(() => {
+            resetErrorBoxStyle();
+        }, 0);
+        /* Reset the error box style back to error colors after success for future errors */
+    }
+}
+/* ============================================*/
+
+
+
+/* =============== Login Validation Helper ===============
+
+============================================*/
+
+/*---------------- Login Username Validation  --------------
+
+----------------------------------------------------*/
+
+
+/*---------------- Login Password Validation  --------------
+
+----------------------------------------------------*/
+
+
+
+/* =============== Login From Handler  ===============
+
+============================================*/
+
+/*---------------- Prevent Default Submisssion --------------
+
+----------------------------------------------------*/
+
+/*---------------- Validate Submisssion --------------
+
+----------------------------------------------------*/
+
+/*---------------- Submisssion Success --------------
+
+----------------------------------------------------*/
 

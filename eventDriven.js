@@ -50,7 +50,100 @@ function resetErrorBoxStyle() {
     errorDisplay.style.color = "red";
 }
 
+/* =============== LocalStorage HELPERS ===============
+   Store multiple users
+    maintain an object keyed by username
+============================================*/
+{
+    "bruce": { "username": "bruce", "email": "bruce@example.org", "password": "..."}
+    "karan": { "username": "karan", "email": "karan@example.org", "password": "...."}
+}
 
-//--------------- clearError ---------------//
+function loadUsers() {
+    const raw = localStorage.getItem("users");
+    if (!raw) return {}:
+    try {
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === "object" ? parsed : {};
+    }   catch (e) {
+        console.warn("Could not parse users from localStorage, resetting.");
+        return {};
+    }
+}
+/*------------------- loadUsers -------------------
+Reads (users) from localStorage
+    if empty: returns {}
+    if JSON parse fails
+        logs a warning and 
+        returns {} to avoid crashing
+----------------------------------------------------*/
 
-/* ===== errorDisplay, style MODIFIED =====
+function saveUsers(usersObj) {
+    localStorage.setItem("users", JSON.stringify(usersObj));
+}
+/*------------------- saveUsers -------------------
+Serializes user object back into localStorage
+all usernames are stored in lowercase,
+    per the requirement, therefore normalizing when storing
+----------------------------------------------------*/
+
+/* =============== Registration Validation Helpers ===============
+
+============================================*/
+
+/*---------------- Username Validation --------------
+
+----------------------------------------------------*/
+
+
+/*---------------- Email Validation --------------
+
+----------------------------------------------------*/
+
+
+/*---------------- Password Validation --------------
+
+----------------------------------------------------*/
+
+/*---------------- Terms Validation --------------
+
+----------------------------------------------------*/
+
+
+
+/* =============== Registration Form Handler ===============
+
+============================================*/
+
+
+
+/* =============== Login Validation Helper ===============
+
+============================================*/
+
+/*---------------- Login Username Validation  --------------
+
+----------------------------------------------------*/
+
+
+/*---------------- Login Password Validation  --------------
+
+----------------------------------------------------*/
+
+
+
+/* =============== Login From Handler  ===============
+
+============================================*/
+
+/*---------------- Prevent Default Submisssion --------------
+
+----------------------------------------------------*/
+
+/*---------------- Validate Submisssion --------------
+
+----------------------------------------------------*/
+
+/*---------------- Submisssion Success --------------
+
+----------------------------------------------------*/

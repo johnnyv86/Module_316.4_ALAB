@@ -312,19 +312,56 @@ if (registrationForm) {
 
 
 
-/* =============== Login Validation Helper ===============
-
-============================================*/
-
-/*---------------- Login Username Validation  --------------
-
-----------------------------------------------------*/
+/* =============== LOGIN VALIDATION HELPER ===============
 
 
-/*---------------- Login Password Validation  --------------
+/* Login Username Validation  ------------------------------
+    Cannot be blank
+    Must exist in localStorage
+    Case-insensitive */
 
-----------------------------------------------------*/
+function validateLoginUsername(usernameRaw, users) {
+    const username = usernameRaw.trim();
 
+    if (!username) {
+        return "Username cannot be blank.";
+    }
+
+    const usernameLower = username.toLowerCase();
+    if (!users[usernameLower]) {
+        return "That usernamedoes not exist.";
+    }
+
+    return null;
+}
+
+/* Login Password Validation ------------------------------
+    Cannot be blank
+    Must match stored password in localStorage */
+
+function validateLoginPassword(passwordRaw, usernameRaw, users) {
+    const password = passwordRaw;
+    const usernameLower = usernameRaw.trim().toLowerCase();
+    // Use the same lowercase username key as registration
+
+    // Compare the plain password strings
+    if (!password) {
+        return "Password cannot be blank.";
+    }
+
+    const user = users[usernameLower];
+    if (!user) {
+        return "That username does not exist.";
+    }
+
+    if (password !== user.password) {
+        return "Incorrect password.";
+    }
+
+    return null;
+}
+
+/*============================================*/
 
 
 /* =============== Login From Handler  ===============

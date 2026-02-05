@@ -1,3 +1,4 @@
+/* Resets default browser margins/paddings  */
 body,
 html {
   width: 100%;
@@ -6,67 +7,93 @@ html {
   padding: 0px;
   font-family: Calibri;
 }
+
+/* the diagonal gradient background  */
 body {
   background: linear-gradient(-45deg, #0079c0, #0097a7, #4285f4);
   color: #888;
 }
+
+/* MAIN CONTAINER STYLING 
+      Absolute Positioning & Transform 
+      Centers the box perfectly in the middle of screen
+      Regardless of window size */
 .form-container {
   position: absolute;
   background: #eee;
-  display: flex;
+  display: flex;        /* Arranges the two child divs (Register/Login) side-by-side */
   width: 700px;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
-  box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.25);
-  user-select: none;
+  transform: translate(-50%, -50%);     /* Shifts element back by 50% of its own width/height */
+  box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.25);   /* Adds the drop shadow */
+  user-select: none;    /* Prevents user from highlighting the text */
 }
+
+/* The two main column (Register & Login divs  */
 .form-container > div {
   width: 300px;
   margin: 10px;
   padding: 5px;
 }
+
+/* HEADER STYLING  */
 .form-container h1 {
   color: #0097a7;
   margin: 0px 5px;
   padding: 5px;
   border-bottom: 1px solid lightgray;
 }
+
 .form-container form {
   position: relative;
   width: 100%;
   padding: 5px 10px;
 }
+
 .form-container p {
   padding: 5px 10px;
   margin: 2.5px 0px;
 }
+
+/* INPUT FIELD STYLING  */
 .form-container input[type="text"],
 .form-container input[type="email"],
 .form-container input[type="password"] {
   width: 250px;
-  padding: 7px 7px 7px 40px;
+  padding: 7px 7px 7px 40px;    /* padding-left is 40px to make room for the icon on the left side */
   margin: 5px 0px;
   outline: 1px solid #888;
   border: 0px solid #0000;
   border-radius: 5px;
 }
+
+/* FOCUS STATE: 
+      Change outline color to orange when user clicks input */
 .form-container input[type="text"]:focus,
 .form-container input[type="email"]:focus,
 .form-container input[type="password"]:focus {
   outline: 2px solid #ffab40;
 }
+
+/*   */
 .form-container input[type="checkbox"] {
   margin-right: 10px;
 }
+
+/* HELPER CLASS
+      Align checkboxes and labels side-by-side */
 .flex-row {
   display: flex;
   align-items: center;
 }
+
 .form-container label {
   align-items: center;
   cursor: pointer;
 }
+
+/* SUBMIT BUTTON STYLING  */
 .form-container input[type="submit"] {
   margin-left: auto;
   font-weight: bold;
@@ -76,9 +103,14 @@ body {
   background: #55ecfc;
   cursor: pointer;
 }
+
+/* SUBMIT BUTTON HOVER EFFECT  */
 .form-container input[type="submit"]:hover {
   background: #ffab40;
 }
+
+/* ICON STYLING
+  Positioned absolutely to sit on top of the input field */
 .form-container .input-icon {
   position: absolute;
   left: 10px;
@@ -92,18 +124,28 @@ body {
   text-align: center;
   line-height: 29px;
 }
+
+/* ADVANCED SELECTOR:
+      When an input is focused, select the sibling (.input-icon) immediately following it 
+      and change its color/outline to orange. */
 .form-container input:focus + .input-icon {
   color: #ffab40;
   outline: 2px solid #ffab40;
   margin: 5px 0px;
 }
+
 a {
   color: #0097a7;
   text-decoration: none;
 }
+
 a:hover {
   color: #ffab40;
 }
+
+/* ERROR BOX STYLING
+      Hidden by default (display: none). 
+      Positioned below the main form container. */
 #errorDisplay {
   position: absolute;
   background: #fcc;
@@ -111,10 +153,10 @@ a:hover {
   display: flex;
   width: 500px;
   left: 50%;
-  top: calc(50% + 180px);
+  top: calc(50% + 180px); /* 50% down + 180px offset */
   transform: translate(-50%, 0%);
   box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.25);
   user-select: none;
   padding: 20px;
-  display: none;
+  display: none;  /* JS toggles this to 'block' */
 }

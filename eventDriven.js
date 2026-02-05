@@ -1,20 +1,25 @@
-/* =============== DOM HELPERS ===============
-    Grab references to the: 
-        registration form,
-        login form,
-        error display 
-            container from the HTML code*/
+/* ========================================================================================================
+    DOM HELPERS 
+======================================================================================================== */
+   
+    /* Grab references to the: 
+       registration form,
+       login form,
+       error display 
+           container from the HTML code */
 
 const registrationForm = document.getElementById("registration");
 const loginForm = document.getElementById("login");
 const errorDisplay = document.getElementById("errorDisplay");
-/* ============================================*/
 
+/* ========================================================================================================
+    errorDisplay - Style Modified
+======================================================================================================== */
 
-/* ===== errorDisplay - Style Modified =============
-
--------------------- showError ----------------------
-sets text of #errorDisplay & shows it (display:block)*/ 
+/* showError ---------------------------------------------------------
+    1. Sets the text of the error box.
+    2. Makes the box visible (display: block).
+    3. Puts the cursor (focus) into the input field that caused the error. */
 
 function showError(message, inputToFocus) {
     errorDisplay.textContent = message;
@@ -24,16 +29,17 @@ function showError(message, inputToFocus) {
     }
 }
 
-/*------------------- clearError -------------------
-Clears both text and hides the error box*/
+/* clearError -------------------------------------------------------
+    Clears both text and hides the error box */
 
 function clearError() {
     errorDisplay.textContent = "";
     errorDisplay.style.display = "none";
 }
 
-/*------------------- showSuccess ------------------
-Uses the same box to show success messages, with greenish styling.*/
+/* showSuccess -------------------------------------------------------
+    Use the same box error box to show success messages, 
+        changes to greenish styling to indicate success. */
 
 function showSuccess(message) {
     errorDisplay.textContent = message;
@@ -42,47 +48,43 @@ function showSuccess(message) {
     errorDisplay.style.color = "green";
 }
 
-/*---------------- resetErrorBoxStyle --------------
-Returns the box to default red error styling for the next error.*/
+/* resetErrorBoxStyle ------------------------------------------------
+    Returns the box to default red error styling for the next error. */
 
 function resetErrorBoxStyle() {
     errorDisplay.style.background = "#fcc";
     errorDisplay.style.color = "red";
 }
-/*============================================*/
+/* ======================================================================================================================
+    LocalStorage HELPERS 
+========================================================================================================= */
+   
+/* Data Structure to Achieve ------------------------------------------
+    {
+        "bruce": { "username": "bruce", "email": "bruce@example.org", "password": "..."}
+        "karan": { "username": "karan", "email": "karan@example.org", "password": "...."}
+    }
+/* ---------------------------------------------------------------------
 
-
-/* =============== LocalStorage HELPERS ===============
-   Store multiple users
-    maintain an object keyed by username*/
-
-{
-    "bruce": { "username": "bruce", "email": "bruce@example.org", "password": "..."}
-    "karan": { "username": "karan", "email": "karan@example.org", "password": "...."}
-}
-/*============================================*/
-
-/*------------------- loadUsers -------------------*/
-function loadUsers() {
-    const raw = localStorage.getItem("users");
-    if (!raw) return {}:
-    try {
+// loadUsers ----------------------------------------------------------
+function loadUsers() {                  
+    // 1. Get string from browser localStroage
+    const raw = localStorage.getItem("users");                                  
+    // 2. If nothing exisit yet, return {}: an empty object
+    if (!raw) return {};                                                        
+    // 3. Try to parse the JSON string back into the JS Object
+    try {                                                                       
         const parsed = JSON.parse(raw);
         return parsed && typeof parsed === "object" ? parsed : {};
     }   catch (e) {
+    // 4. If data is corrupted, log warning and return empty object to prevent crash
         console.warn("Could not parse users from localStorage, resetting.");
         return {};
     }
-    /* Reads (users) from localStorage
-    if empty: returns {}
-    if JSON parse fails
-        logs a warning and 
-        returns {} to avoid crashing*/
-}
-/*----------------------------------------------------*/
 
 
-/*------------------- saveUsers -------------------*/
+
+// saveUsers ---------------------------------------------------------
 function saveUsers(usersObj) {
     localStorage.setItem("users", JSON.stringify(usersObj));
     /* Serializes user object back into localStorage
@@ -91,20 +93,18 @@ function saveUsers(usersObj) {
 }
 
 
-/*----------------------------------------------------*/
 
+/* ====================================================================================================================================================================================
+    REGISTRATION VALIDATION HELPERS 
+================================================================================================================================================================================================================================ */
 
-/* =============== Registration Validation Helpers ===============
-
-============================================*/
-
-/*---------------- Username Validation --------------*/
+// Username Validation -----------------------------------------------
 function validateUsername(usernameRaw, users) {
-    const username = usernameRaw.trim();
+    // Remove whitespace from ends
+    const username = usernameRaw.trim();        
 
     if(!username) {
         return "The username cannot be blank.";
-    
     /* (!username):If undefined,null, or an empty string: False  
     (username.trim() ===''): True if only whitespace
         Removes leading/trailing whitespaces
@@ -112,66 +112,63 @@ function validateUsername(usernameRaw, users) {
             (' hello '.trim()): Returns 'hello' */
     }
 
-    if(username.length < 4) {
-        /* (length): property counts characters - simple numeric comparison */
-
+    // (length): property counts characters - simple numeric comparison 
+    if(username.length < 4) {               
         return "The username must be at least four characters long";
     }
 
+    // (new Set(username.split(""))): builds a set of distinct characters
     const uniqueChars = new Set(username.split(""));
-    /* (new Set(username.split(""))): builds a set of distinct characters */
-
     if (uniqueChars.size) < 2 {
         return "Username must contain at least two unique characters.";
+    /*  Creates a Set (collection of unique values) from the string characters
+            If "hello" is passed, Set becomes {"h", "e", "l", "o"} (size 4)
+            If "aaaa" is passed, Set becomes {"a"} (size 1) */
     }
 
+ // Regex (/^[A-Za-z0-9]+$/): rejects anything other than basic letters and digits.
     const usernameRegex = /^[A-ZA-Z0-9]+$/;
-    /* Regex (/^[A-Za-z0-9]+$/): rejects anything other than basic letters and digits. */
-
     if (!usernameRegex.test(username)) {
         return "Username cannot contain special characters or whitespace.";
+    /*  Regex Explanation:
+            ^ = Start of string
+            [A-Za-z0-9] = Allow only Letters (upper/lower) and Numbers
+            + = One or more times
+            $ = End of string */
     }
 
+    // Checks (users[usernameLower]) in localStorage, enforcing uniqueness ignoring case. 
     const usernameLower = username.toLowerCase();
-    /* Checks (users[usernameLower]) in localStorage, enforcing uniqueness ignoring case. */
-
     if (user[usernameLower]) {
         return "That username is already taken.";
     }
-
-    return null;
+    return null; // NO ERRORS
 }
-/*----------------------------------------------------*/
 
 
-/*---------------- Email Validation --------------*/
+// Email Validation --------------------------------------------------
 function validateEmail(emailRaw) {
     const email = emailRaw.trim();
-
     if (!email) {
         return "Email cannot be blank.";
     }
 
+    // Simple & reasonable email regex checks for (something@something.something).
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    /* Simple & reasonable email regex checks for (something@something.something). */
-
     if (!emailRegex.test(email)) {
         return "Email must be a valid email address.";
     }
 
+    // Splitting at ("@") and checking domain blocks ("@example.com") regardless of case. */
     const domain = email.split ("@").toLowerCase();
-    /* Splitting at ("@") and checking domain blocks ("@example.com") regardless of case. */
-
-    if (domain === "example.com") {
+    if (domain === "example.com") { // Blocks "example.com" specifically
         return 'Email must not be from the domain "example.com".';
     }
-    
     return null;
 }
-/*----------------------------------------------------*/
 
 
-/*---------------- Password Validation --------------*/
+// Password Validation -----------------------------------------------
 function validatePasswords(passwordRaw, passwordCheckRaw, usernameRaw) {
     const password = passwordRaw;
     const passwordCheck = passwordCheckRaw;
@@ -183,74 +180,79 @@ function validatePasswords(passwordRaw, passwordCheckRaw, usernameRaw) {
         compare against lowercased (username)
     Return an appropriate error string if anything fails */
 
+    // ≥ 0 characters: field cant be empty
     if (!password) {
         return "Password cannot be blank.";
     }
 
+    // ≥ 12 characters & At least one uppercase and one lowercase
     if(password.length < 12) {
         return "Password must have at least one uppercase and one lowercase letter.";
-        /*  ≥ 12 characters & At least one uppercase and one lowercase */
     }
-
+    
+    // At least one number & At least one special character
     if (!/[0-9]/.test(password)) {
         return "Password must contain at least one special character.";
-        /* At least one number & At least one special character */
     }
 
     if (password.toLowerCase().includes("password")) {
         return 'Password cannot contain the word "password".';
-        /* Must not contain ("password") (any case). */
     }
 
+    // Must not contain ("password") (any case).
+    // Must not contain the username (case‑insensitive)
     if (username && password.toLowerCase().includes(username)) {
         return "Password cannot contain the username.";
-        /* Must not contain the username (case‑insensitive) */
     }
 
+    // Both password fields must match.
     if (password !== passwordCheck) {
         return "Both passwords must match.";
-        /* Both password fields must match. */
     }
 
     return null;
 }
-/*----------------------------------------------------*/
 
 
-/*---------------- Terms Validation --------------*/
+
+/* Terms Validation --------------------------------------------------
 function validateTerms(termsChecked) {
+    // Checks if Checkbox Check
     if (!termsChecked) {
         return "You must accept the terms and conditions.";
-        /* Checkbox Check */
     }
     return null;
 }
-/*----------------------------------------------------*/
 
-/* =============== Registration Form Handler ===============*/
+/* =======================================================================================================================
+    REGISTRATION FORM HANDLER
+======================================================================================================================= */
+
 if (registrationForm) {
     registrationForm.addEventListener("submit", function (event) {
+        // 1. Prevent browser from refreshing the page
         event.preventDefault();
+        // 2. Clears any previous error styles
         resetErrorBoxStyle();
         clearError();
-        /* (event.preventDefault()) prevents the browser’s default form submission */
-
+        /* 3. Grab all form inputs
+            (form.elements[name]): Get each input that matches the `name` attributes in the HTML */
         const form = event.target;
         const usernameInput = form.elements["username"];
         const emailInput = form.elements["email"];
         const passwordInput = form.elements["password"];
         const passwordCheckInput = form.elements ["passwordCheck"];
         const termsInput = form.elements["terms"];
-        /* (form.elements[name]): Get each input that matches the `name` attributes in the HTML */
         
+        // 4. Load current user database from localStorage
         const users = loadUsers();
-        /* Load existing users from localStorage */
+        
 
     
-    /* For each error -------------------------------------------------------------
-        (showError): to display the message and set focus
-        (return): to stop further execution (form does not submit), as required 
-        ------------------------------------------------------------------------ */
+        /* 5. Run Validations Step-by-Step ---------------------------
+                For each error:    
+                    (showError): to display the message and set focus
+                    (return): to stop further execution (form does not submit), as required */
 
         const usernameError = validateUsername(usernameInput.value, users);
         if (usernameError) {
@@ -280,42 +282,43 @@ if (registrationForm) {
             return;
         }
 
-    /* If/When NO error -------------------------------------------------------------
-        Check Pass - Store the user
-        ------------------------------------------------------------------------ */
+    /* SUCCESS: ------------------------------------------------------
+            If code reaches this point - ALL validations PASSED    
+                Check Pass - Store the user */
         
+        // Normalize username and email to lowercase before storage
         const usernameLower = usernameInput.value.trim().toLowerCase();
         const emailLower = emailInput.value.trim().toLowerCase();
-        /* Normalize username and email to lowercase before storage */
 
+        // Store (password) as entered (in a real app would hash)
         users[usernameLower] = {
             username: usernameLower,
             email: emailLower,
             password: passwordInput.value,
-            /* Store (password) as entered (in a real app would hash) */
         };
 
+        // Save updated list to localStorage
         saveUsers(users);
 
+         // Clear the form and show a success message */
         form.reset();
-        /* Clear the form and show a success message */
 
         showSuccess("Registration successful! You may now log in.");
 
+        // After a moment, Reset the error box style back to error colors after success for future errors
         setTimeout(() => {
             resetErrorBoxStyle();
-        }, 0);
-        /* Reset the error box style back to error colors after success for future errors */
-    }
+        }, 3000); // 3 SECONDS DELAY (to make it smoother)
+    });
 }
-/* ============================================*/
 
 
 
-/* =============== LOGIN VALIDATION HELPER ===============
+/* =========================================================================================================
+    LOGIN VALIDATION HELPER 
+========================================================================================================= */
 
-
-/* Login Username Validation  ------------------------------
+/* Login Username Validation  ----------------------------------------
     Cannot be blank
     Must exist in localStorage
     Case-insensitive */
@@ -328,6 +331,7 @@ function validateLoginUsername(usernameRaw, users) {
     }
 
     const usernameLower = username.toLowerCase();
+    // Check if the key exists in the object
     if (!users[usernameLower]) {
         return "That usernamedoes not exist.";
     }
@@ -335,7 +339,7 @@ function validateLoginUsername(usernameRaw, users) {
     return null;
 }
 
-/* Login Password Validation ------------------------------
+/* Login Password Validation -----------------------------------------
     Cannot be blank
     Must match stored password in localStorage */
 
@@ -349,25 +353,26 @@ function validateLoginPassword(passwordRaw, usernameRaw, users) {
         return "Password cannot be blank.";
     }
 
+    // Retrieve user object
     const user = users[usernameLower];
+    // Safety check: ensure user exists before checking password
     if (!user) {
         return "That username does not exist.";
     }
 
+    // Check if entered password matches stored password
     if (password !== user.password) {
         return "Incorrect password.";
     }
-
     return null;
 }
-/*============================================*/
 
 
-/* =============== Login From Handler  ===============
+/* =============================================================================================================
+    LOGIN FROM HANDLER
+============================================================================================================== */
 
-============================================*/
-
-/* Prevent Default Submisssion ----------------  --------------
+/* Prevent Default Submisssion ---------------------------------------
     Grabs the:
         Username
         Password
@@ -386,7 +391,7 @@ if (loginForm) {
 
         const users = loadUsers();
 
-/* Validate Submisssion ----------------  --------------
+/* Validate Submisssion ----------------------------------------------
     If anything fails:
         Show error
         Focus input
@@ -410,7 +415,7 @@ if (loginForm) {
         }
 
 
-/* Submisssion Success ----------------  --------------
+/* Submisssion Success ---------------------------------------------------------------------------------------
     Clear the form
     Show a success message when suffix checked:
         "Keep me logged in" */
@@ -429,5 +434,4 @@ if (loginForm) {
         }, 0);
     });
 }
-----------------------------------------------------*/
 
